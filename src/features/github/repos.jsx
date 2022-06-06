@@ -1,23 +1,50 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useFetchReposQuery } from "./github-api-slice";
 import { useSelector } from "react-redux";
 
 const Repos = () => {
   const [page, setPage] = useState(1)
-  const per_page = 100
+  const per_page = 30
 
   const searchTerm  = useSelector(state => state.searchTerm);
   const dataType  = useSelector(state => state.dataType);
 
+  const [scrollPosition, setScrollPosition] = useState(0);
+  console.log('scrollPosition:', scrollPosition)
+  const handleScroll = () => {
+      const position = window.pageYOffset;
+      setScrollPosition(position);
+  };
+
+  useEffect(() => {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+
+      return () => {
+          window.removeEventListener('scroll', handleScroll);
+      };
+  }, []);
+
+  const currentPage = 4350 // a page with 30 repos will have a scroll position of ~4350
+  const lastResult = useFetchReposQuery({searchTerm, dataType, page: page - 1, per_page}, { skip: !searchTerm && page === 1  });
+  const currentResult = useFetchReposQuery({searchTerm, dataType, page, per_page}, { skip: !searchTerm  });
+  const nextResult = useFetchReposQuery({searchTerm, dataType, page: page + 1, per_page}, { skip: !searchTerm  });
+  console.log('nextResult:', nextResult)
+
+  const combined = useMemo(() => {
+    const arr = new Array(per_page * (currentPage + 1))
+    for (const data of [lastResult.data, currentResult.data, nextResult.data]) {
+      if (data) {
+        arr.splice(data.total_count, data.items.length, ...data.items)
+      }
+    }
+    return arr
+  }, [per_page, currentPage, lastResult.data, currentResult.data, nextResult.data])
   const {
-    data,
     isFetching,
     isLoading,
     isError,
     error,
-  } = useFetchReposQuery({searchTerm, dataType, page, per_page}, { skip: !searchTerm  });
-  const results = data ?? {};
-  const lastPage = Math.ceil(results.total_count/per_page)
+  } = currentPage // since we only care about the page we are on at the moment
 
   if (isError && error?.status === 404) {
     return <div>Github repository not found</div>
@@ -44,14 +71,10 @@ const Repos = () => {
     return <div className="text-hint">Search starts at 4 characters, type more...</div>;
   }
 
-  if(results && !results.total_count) {
-    return <div>No GitHub data found</div>
-  }
-
-  if (results && dataType === 'Repos') {
+  if (combined && dataType === 'Repos') {
     return (
       <ul>
-        {results.items.map(({ id, name, owner, stargazers_count }) => {
+        {combined.map(({ id, name, owner, stargazers_count }) => {
           return (
             <div key={id}>
               <li>
@@ -62,22 +85,6 @@ const Repos = () => {
             </div>
           )
         })}
-        {page !== 1 && (
-          <button
-            onClick={() => setPage(page - 1)}
-            isLoading={isFetching}
-          >
-            Prev
-          </button>
-        )}
-        {page !== lastPage && (
-          <button
-            onClick={() => setPage(page + 1)}
-            isLoading={isFetching}
-          >
-            Next
-          </button>
-        )}
       </ul>
     )
   }
