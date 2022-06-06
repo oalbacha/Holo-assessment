@@ -21,9 +21,23 @@ export const githubApiSlice = createApi({
           }
         },
       }),
+      fetchIssues: builder.query ({
+        query({searchTerm, dataType, page=1, per_page}) {
+          if(dataType === 'Issues' && searchTerm !== undefined) {
+            return `/search/issues?q=${searchTerm}&page=${page}&per_page=${per_page}`;
+          }
+        },
+      }),
+      fetchUsers: builder.query ({
+        query({searchTerm, dataType, page=1, per_page}) {
+          if(dataType === 'Users' && searchTerm !== undefined) {
+            return `/search/users?q=${searchTerm}&page=${page}&per_page=${per_page}`;
+          }
+        },
+      }),
     };
   },
   refetchOnMountOrArgChange: 60
 });
 
-export const { useFetchReposQuery } = githubApiSlice;
+export const { useFetchReposQuery, useFetchIssuesQuery, useFetchUsersQuery } = githubApiSlice;

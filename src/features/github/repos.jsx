@@ -10,25 +10,23 @@ const Repos = () => {
   const dataType  = useSelector(state => state.dataType);
 
   const [scrollPosition, setScrollPosition] = useState(0);
-  console.log('scrollPosition:', scrollPosition)
   const handleScroll = () => {
       const position = window.pageYOffset;
       setScrollPosition(position);
   };
 
   useEffect(() => {
-      window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
-      return () => {
-          window.removeEventListener('scroll', handleScroll);
-      };
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const currentPage = 4350 // a page with 30 repos will have a scroll position of ~4350
   const lastResult = useFetchReposQuery({searchTerm, dataType, page: page - 1, per_page}, { skip: !searchTerm && page === 1  });
   const currentResult = useFetchReposQuery({searchTerm, dataType, page, per_page}, { skip: !searchTerm  });
   const nextResult = useFetchReposQuery({searchTerm, dataType, page: page + 1, per_page}, { skip: !searchTerm  });
-  console.log('nextResult:', nextResult)
 
   const combined = useMemo(() => {
     const arr = new Array(per_page * (currentPage + 1))

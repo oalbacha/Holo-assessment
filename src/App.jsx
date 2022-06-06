@@ -3,6 +3,8 @@ import { Route, Routes, Link } from 'react-router-dom';
 import { setSearchTerm, setDataType } from './app/store';
 import { useDispatch, useSelector } from 'react-redux';
 import Repos from './features/github/repos'
+import Issues from './features/github/issues'
+import Users from './features/github/users'
 import { useDebounce } from './app/hooks'
 import './App.css'
 
@@ -49,20 +51,13 @@ function App() {
         />
         <select onChange={handleSelectChange} className='App-select'>
           <option defaultChecked value='Repos'>Repos</option>
+          <option value='Issues'>Issues</option>
+          <option value='Users'>Users</option>
         </select>
-        <Repos />
+        {/* <Repos /> */}
+        <Issues />
+        <Users />
       </header>
-      <p>
-        <Link
-          to={'/'}
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </Link>
-      </p>
     </div>
   )
 }
