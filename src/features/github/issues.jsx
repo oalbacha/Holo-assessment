@@ -1,50 +1,23 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useFetchIssuesQuery } from "./github-api-slice";
 import { useSelector } from "react-redux";
 
-const Repos = () => {
+const Issues = () => {
   const [page, setPage] = useState(1)
   const per_page = 30
 
   const searchTerm  = useSelector(state => state.searchTerm);
   const dataType  = useSelector(state => state.dataType);
 
-  const [scrollPosition, setScrollPosition] = useState(0);
-  console.log('scrollPosition:', scrollPosition)
-  const handleScroll = () => {
-      const position = window.pageYOffset;
-      setScrollPosition(position);
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  const currentPage = 4350 // a page with 30 repos will have a scroll position of ~4350
-  const lastResult = useFetchIssuesQuery({searchTerm, dataType, page: page - 1, per_page}, { skip: !searchTerm && page === 1  });
-  const currentResult = useFetchIssuesQuery({searchTerm, dataType, page, per_page}, { skip: !searchTerm  });
-  const nextResult = useFetchIssuesQuery({searchTerm, dataType, page: page + 1, per_page}, { skip: !searchTerm  });
-
-  const combined = useMemo(() => {
-    const arr = new Array(per_page * (currentPage + 1))
-    for (const data of [lastResult.data, currentResult.data, nextResult.data]) {
-      if (data) {
-        arr.splice(data.total_count, data.items.length, ...data.items)
-      }
-    }
-    return arr
-  }, [per_page, currentPage, lastResult.data, currentResult.data, nextResult.data])
   const {
+    data,
     isFetching,
     isLoading,
     isError,
     error,
-  } = currentPage // since we only care about the page we are on at the moment
-  console.log('combined:', combined)
+  } = useFetchIssuesQuery({searchTerm, dataType, page, per_page}, { skip: !searchTerm  });
+  const results = data ?? {};
+  const lastPage = Math.ceil(results.total_count/per_page)
 
   if (isError && error?.status === 404) {
     return <div>Github repository not found</div>
@@ -71,10 +44,14 @@ const Repos = () => {
     return <div className="text-hint">Search starts at 4 characters, type more...</div>;
   }
 
-  if (combined && dataType === 'Issues') {
+  if(results && !results.total_count) {
+    return <div>No GitHub data found</div>
+  }
+
+  if (results && dataType === 'Issues') {
     return (
       <ul>
-        {combined.map(({ id, title, body, state, updated_at, url, user }) => (
+        {results.items.map(({ id, title, body, state, updated_at, url, user }) => (
           <li key={id}>
             <h2>Title: {title}</h2>
             <p>Exerpt: {body}</p>
@@ -84,9 +61,26 @@ const Repos = () => {
             <p>Belongs to: {user.login}</p>
           </li>
         ))}
+        {page !== 1 && (
+          <button
+            onClick={() => setPage(page - 1)}
+            isLoading={isFetching}
+          >
+            Prev
+          </button>
+        )}
+        {page !== lastPage && (
+          <button
+            onClick={() => setPage(page + 1)}
+            isLoading={isFetching}
+          >
+            Next
+          </button>
+        )}
       </ul>
     )
   }
 };
 
-export default Repos;
+export default Issues;
+
