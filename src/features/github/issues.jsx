@@ -41,7 +41,7 @@ const Issues = () => {
   }
 
   if (searchTerm.length < 4) {
-    return <div className="text-hint">Search starts at 4 characters, type more...</div>;
+    return null
   }
 
   if(results && !results.total_count) {
@@ -50,15 +50,15 @@ const Issues = () => {
 
   if (results && dataType === 'Issues') {
     return (
-      <ul>
+      <ul className="App-grid">
         {results.items.map(({ id, title, body, state, updated_at, url, user }) => (
-          <li key={id}>
-            <h2>Title: {title}</h2>
-            <p>Exerpt: {body}</p>
-            <p>Status: {state}</p>
-            <p>Last Active: {updated_at}</p>
-            <p>URL: {url}</p>
-            <p>Belongs to: {user.login}</p>
+          <li className="App-grid-item" key={id}>
+            <a href={url}>
+              <h2>Title: {title}</h2>
+              <p>Status: {state}</p>
+              <p>Last Active: {updated_at}</p>
+              <p>Belongs to: {user.login}</p>
+            </a>
           </li>
         ))}
         {page !== 1 && (

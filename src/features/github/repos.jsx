@@ -41,7 +41,7 @@ const Repos = () => {
   }
 
   if (searchTerm.length < 4) {
-    return <div className="text-hint">Search starts at 4 characters, type more...</div>;
+    return null
   }
 
   if(results && !results.total_count) {
@@ -50,16 +50,14 @@ const Repos = () => {
 
   if (results && dataType === 'Repos') {
     return (
-      <ul>
+      <ul className="App-grid">
         {results.items.map(({ id, name, owner, stargazers_count }) => {
           return (
-            <div key={id}>
-              <li>
-                <h2>Name: {name}</h2>
-                <p>Owner: {owner.login}</p>
-                <p>Stars: {stargazers_count}</p>
-              </li>
-            </div>
+            <li className="App-grid-item" key={id}>
+              <h2>Name: {name}</h2>
+              <p>Owner: {owner.login}</p>
+              <p>Stars: {stargazers_count}</p>
+            </li>
           )
         })}
         {page !== 1 && (
