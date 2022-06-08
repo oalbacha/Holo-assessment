@@ -53,7 +53,7 @@ const Issues = () => {
       <ul className="App-grid">
         {results.items.map(({ id, title, body, state, updated_at, url, user }) => (
           <li className="App-grid-item" key={id}>
-            <a href={url}>
+            <a className='App-grid-item-link' href={url}>
               <h2>Title: {title}</h2>
               <p>Status: {state}</p>
               <p>Last Active: {updated_at}</p>

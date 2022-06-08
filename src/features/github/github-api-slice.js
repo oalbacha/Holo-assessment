@@ -35,9 +35,30 @@ export const githubApiSlice = createApi({
           }
         },
       }),
+      fetchUsersForProfiles: builder.query ({
+        query({searchTerm, dataType}) {
+          if(dataType === 'Users' && searchTerm !== undefined) {
+            return `/search/users?q=${searchTerm}`;
+          }
+        },
+        transformResponse(response) {
+          const data = response.items
+          return data
+        }
+      }),
+      fetchProfiles: builder.query ({
+        query({login}) {
+           if(login) {
+            return `/${login}`;
+          }
+        },
+        transformResponse(response) {
+          console.log(response) // here we get an array calling each users profile based on the search term. I got a 422 when testing.
+        }
+      })
     };
   },
   refetchOnMountOrArgChange: 60
 });
 
-export const { useFetchReposQuery, useFetchIssuesQuery, useFetchUsersQuery } = githubApiSlice;
+export const { useFetchReposQuery, useFetchIssuesQuery, useFetchUsersQuery, useFetchUsersForProfilesQuery, useFetchProfiles } = githubApiSlice;

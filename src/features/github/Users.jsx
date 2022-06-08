@@ -51,13 +51,14 @@ const Users = () => {
   if (results && dataType === 'Users') {
     return (
       <ul className="App-grid">
-        {results.items.map(({ id, login, url, avatar_url }) => {
+        {results.items.map(({ id, login, url, avatar_url, repos_url }) => {
           return (
             <li className="App-grid-item" key={id}>
-              <a href={url}>
+              <a className='App-grid-item-link' href={url}>
                 <img className='App-user-image' src={avatar_url} alt={`${login}'s profile image`} />
                 <h2>Name: {login}</h2>
               </a>
+              <a href={repos_url}>View Repositories</a>
             </li>
           )
         })}

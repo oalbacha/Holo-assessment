@@ -2,6 +2,13 @@
   text-align: center;
 }
 
+.App-header {
+  background-color: #fff;
+  min-height: 100vh;
+  display: flex;
+  color: gray;
+}
+
 .App-title-container {
   display: flex;
 }
@@ -44,18 +51,18 @@
 .App-grid-item {
   background-color: gray;
   padding: 20px;
+  height: 12rem;
+  color: white;
 }
+
+ .App-grid-item .App-grid-item-link {
+   text-decoration: none;
+   color: white;
+ }
 
 .App-user-image {
   width: 50px;
   border-radius: 50%;
-}
-
-.App-header {
-  background-color: #fff;
-  min-height: 100vh;
-  display: flex;
-  color: white;
 }
 
 .App-wrapper {

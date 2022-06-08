@@ -15,7 +15,6 @@
   line-height: 1.6;
   display: flex;
   align-items: center;
-  /* justify-content: space-around; */
   cursor: pointer;
 }
 
@@ -51,5 +50,5 @@
 }
 
 .dropdown .dropdown-content .dropdown-item:hover {
-  background-color: #fcfcfc;
+  background-color: #ccc9c9;
 }

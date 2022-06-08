@@ -41,7 +41,3 @@ const Dropdown = ({type, setType}) => {
 };
 
 export default Dropdown;
-
-// { selected, setSelected }
-//
-// setSelected(option);

@@ -40,8 +40,8 @@ const Repos = () => {
     return <div className="text-hint">Fetching GitHub...</div>;
   }
 
-  if (searchTerm.length < 4) {
-    return null
+  if (searchTerm.length > 0 && searchTerm.length < 4) {
+    return <div>Search starts at 4 character</div>
   }
 
   if(results && !results.total_count) {
