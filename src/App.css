@@ -87,3 +87,11 @@
 .App-nav-controls input::placeholder {
   font-size: large;
 }
+
+.App-pagination {
+  width: 90%;
+  margin:50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}

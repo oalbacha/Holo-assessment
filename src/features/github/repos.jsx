@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useFetchReposQuery } from "./github-api-slice";
 import { useSelector } from "react-redux";
+import PaginationButton from "../../components/PaginationButton";
 
 const Repos = () => {
   const [page, setPage] = useState(1)
@@ -50,35 +51,51 @@ const Repos = () => {
 
   if (results && dataType === 'Repos') {
     return (
-      <ul className="App-grid">
-        {results.items.map(({ id, name, owner, stargazers_count }) => {
-          return (
-            <li className="App-grid-item" key={id}>
-              <h2>Name: {name}</h2>
-              <p>Owner: {owner.login}</p>
-              <p>Stars: {stargazers_count}</p>
-            </li>
-          )
-        })}
-        {page !== 1 && (
-          <button
-            onClick={() => setPage(page - 1)}
-            isLoading={isFetching}
-          >
-            Prev
-          </button>
-        )}
-        {page !== lastPage && (
-          <button
-            onClick={() => setPage(page + 1)}
-            isLoading={isFetching}
-          >
-            Next
-          </button>
-        )}
-      </ul>
+      <>
+        <ul className="App-grid">
+          {results.items.map(({ id, name, owner, stargazers_count }) => {
+            return (
+              <li className="App-grid-item" key={id}>
+                <h2>Name: {name}</h2>
+                <p>Owner: {owner.login}</p>
+                <p>Stars: {stargazers_count}</p>
+              </li>
+            )
+          })}
+        </ul>
+        <div className="App-pagination">
+          {
+            page && page !== 1 && (
+              <PaginationButton
+                lastPage={lastPage}
+                page={page}
+                setPage={setPage}
+                isLoading={isLoading}
+                isFetching={isFetching}
+                value={'Prev'}
+                nextPage={false}
+              />
+            )
+          }
+          {
+            page && page !== lastPage && (
+              <PaginationButton
+                lastPage={lastPage}
+                page={page}
+                setPage={setPage}
+                isLoading={isLoading}
+                isFetching={isFetching}
+                value={'Next'}
+                nextPage={true}
+              />
+            )
+          }
+        </div>
+      </>
+
     )
   }
 };
 
 export default Repos;
+
